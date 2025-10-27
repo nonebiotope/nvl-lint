@@ -5,7 +5,6 @@ from model import Linter, LintResult
 CommaPattern = re.compile(r"，")
 PeriodPattern = re.compile(r"．")
 
-
 class JpPunctuationOfficial(Linter):
     name = "公文書的な句読点"
     description = "いわゆる公文書な句読点，/．が使われていないかチェックします。"
