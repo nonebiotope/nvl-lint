@@ -5,8 +5,7 @@ import sys
 
 from model import LintResult
 
-
-def lint(path: str):
+def lint(path: str, is_markdown: bool = False):
     if not os.path.exists(os.path.join(path, "nvllint.config.json")):
         print("nvllint.config.json not found.")
         return
@@ -21,9 +20,14 @@ def lint(path: str):
                 body = f.read()
             lint_result: list[LintResult] = linter.run(body)
             for result in lint_result:
-                print(
-                    f"{result.rule} {os.path.join(path, file)}:{result.line}:{result.column}\n{result.message}\n"
-                )
+                if is_markdown:
+                    print(
+                        f"- <ins>{result.rule}</ins> {os.path.join(path, file)}:{result.line}:{result.column}\n`{result.message}`\n"
+                    )
+                else:
+                    print(
+                        f"{result.rule} {os.path.join(path, file)}:{result.line}:{result.column}\n{result.message}\n"
+                    )
 
 
 def add_linter(linter_name: str):
@@ -50,8 +54,10 @@ def del_linter(linter_name: str):
 
 
 if __name__ == "__main__":
-    if sys.argv[1] == "lint":
-        lint(sys.argv[2])
+    if sys.argv[1] == "lint-cli" or sys.argv[1] == "lint":
+        lint(sys.argv[2], is_markdown=False)
+    elif sys.argv[1] == "lint-md":
+        lint(sys.argv[2], is_markdown=True)
     elif sys.argv[1] == "add":
         add_linter(sys.argv[2])
     elif sys.argv[1] == "del":
